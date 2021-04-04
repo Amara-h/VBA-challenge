@@ -1,0 +1,136 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "ThisWorkbook"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+Sub stock_market():
+
+
+Dim ticker As String
+Dim number_tickers As Integer
+
+
+Dim lastRow As Long
+
+
+Dim open_price As Double
+Dim close_price As Double
+
+
+Dim yearly_change As Double
+Dim percent_change As Double
+
+Dim total_stock_volume As Double
+
+
+Dim greatest_percent_increase As Double
+Dim greatest_percent_increase_ticker As String
+
+
+Dim greatest_percent_decrease As Double
+Dim greatest_percent_decrease_ticker As String
+
+
+Dim greatest_stock_volume As Double
+Dim greatest_stock_volume_ticker As String
+
+
+
+For Each ws In Worksheets
+
+   
+    ws.Activate
+
+   
+    lastRowState = ws.Cells(Rows.Count, "A").End(xlUp).Row
+
+   
+    ws.Range("I1").Value = "Ticker"
+    ws.Range("J1").Value = "Yearly Change"
+    ws.Range("K1").Value = "Percent Change"
+    ws.Range("L1").Value = "Total Stock Volume"
+    
+    
+    number_tickers = 0
+    ticker = ""
+    yearly_change = 0
+    opening_price = 0
+    percent_change = 0
+    total_stock_volume = 0
+    
+    
+    For i = 2 To lastRowState
+
+       
+        ticker = Cells(i, 1).Value
+      
+        If opening_price = 0 Then
+            opening_price = Cells(i, 3).Value
+        End If
+        
+       
+        total_stock_volume = total_stock_volume + Cells(i, 7).Value
+        
+      
+        If Cells(i + 1, 1).Value <> ticker Then
+          
+            number_tickers = number_tickers + 1
+            Cells(number_tickers + 1, 9) = ticker
+            
+           
+            closing_price = Cells(i, 6)
+            
+            
+            yearly_change = closing_price - opening_price
+            
+            
+            Cells(number_tickers + 1, 10).Value = yearly_change
+          
+            If yearly_change > 0 Then
+                Cells(number_tickers + 1, 10).Interior.ColorIndex = 4
+            
+            ElseIf yearly_change < 0 Then
+                Cells(number_tickers + 1, 10).Interior.ColorIndex = 3
+            
+            Else
+                Cells(number_tickers + 1, 10).Interior.ColorIndex = 6
+            End If
+            
+            
+           
+            If opening_price = 0 Then
+                percent_change = 0
+            Else
+                percent_change = (yearly_change / opening_price)
+            End If
+            
+            
+           
+            Cells(number_tickers + 1, 11).Value = Format(percent_change, "Percent")
+            
+            
+           
+            
+            
+           
+            opening_price = 0
+            
+            
+            Cells(number_tickers + 1, 12).Value = total_stock_volume
+            
+           
+            total_stock_volume = 0
+        End If
+        
+    Next i
+    
+    
+   
+Next ws
+
+
+End Sub
